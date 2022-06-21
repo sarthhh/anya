@@ -4,3 +4,4 @@ uvloop
 aiomysql
 python-dotenv
 git+https://github.com/tandemdude/lightbulb-ext-filament
+psutil
