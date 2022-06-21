@@ -1,6 +1,7 @@
 import os
 
 from core.bot import Bot
+print('this runs')
 
 if __name__ == "__main__":
     bot = Bot()
