@@ -3,15 +3,19 @@ from __future__ import annotations
 import asyncio
 import datetime
 import os
+import typing as t
 
 import aiomysql  # type: ignore
 import dotenv
 import hikari
 import lightbulb
+
 from database.greetings_database import GreetingsHandler
 from database.prefix_database import PrefixDatabase
 
 from .colors import Colors
+
+__all__: t.Tuple[str, ...] = ("Bot",)
 
 
 class Bot(lightbulb.BotApp):
@@ -47,6 +51,7 @@ class Bot(lightbulb.BotApp):
                 | hikari.Intents.GUILD_MEMBERS
             ),
             help_slash_command=True,
+            delete_unbound_commands=True,
         )
         self.colors = Colors()  # initalising custom colors class
         self.prefix_db = (
@@ -90,7 +95,7 @@ class Bot(lightbulb.BotApp):
             self
         )  # setting up the welcome& leave db for usage.
 
-    async def get_prefix(self, bot: lightbulb.BotApp, message: hikari.Message) -> str:
+    async def get_prefix(self, _: lightbulb.BotApp, message: hikari.Message) -> str:
         """
         Getting custom prefixes for the server or returning the default one
         if None is set.
@@ -98,7 +103,7 @@ class Bot(lightbulb.BotApp):
         Parameters
         ----------
 
-        bot: :class:`.Bot`
+        _: :class:`.Bot`
             The bot class this coroutine is for.
         message: :class:`hikari.Message`
             The message which triggered the coroutine.
@@ -109,7 +114,7 @@ class Bot(lightbulb.BotApp):
         :class:`str`
 
         """
-        return await self.prefix_db.get_prefix_by_id(message.guild_id) or "anya"
+        return await self.prefix_db.get_prefix_by_id(message.guild_id) or "anya "
 
     @property
     def invite_url(self) -> str:

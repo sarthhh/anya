@@ -2,8 +2,12 @@ from __future__ import annotations
 
 import hikari
 import lightbulb
+
 from core.bot import Bot
-from handlers.greetings_handler import GreetingsHandler
+from core.exceptions import DoNothing, NoChannelSetup
+from database.greetings_database import GreetingsHandler
+from handlers.greetings_handler import GreetingMethods
+from handlers.image_handlers import GreetingImage
 
 
 class Plugin(lightbulb.Plugin):
@@ -107,6 +111,7 @@ async def greetings(_: lightbulb.PrefixContext | lightbulb.SlashContext) -> None
 @lightbulb.command(
     name="channel", description="Set channel for greetings log.", pass_options=True
 )
+@lightbulb.implements(lightbulb.PrefixSubCommand, lightbulb.SlashSubCommand)
 async def set_channel(
     context: lightbulb.SlashContext | lightbulb.PrefixContext,
     greeting: str,
@@ -117,10 +122,33 @@ async def set_channel(
             embed=hikari.Embed(
                 description="Invalid choice, `welcome` and `goodbye` are only usable choice.",
                 color=plugin.bot.colors.red_brown,
-            )
+            ),
+            reply=True,
         )
         return
-    await GreetingsHandler.set_channel(context, greeting, channel)
+    await GreetingMethods.set_channel(context, greeting, channel)
+
+
+async def check_setup(
+    context: lightbulb.SlashContext | lightbulb.PrefixContext, greeting
+) -> None:
+    if not (g_id := context.guild_id):
+        return
+    if not greeting.lower() in ("welcome", "goodbye"):
+        await context.respond(
+            embed=hikari.Embed(
+                description="Invalid choice, `welcome` and `goodbye` are only usable choice.",
+                color=plugin.bot.colors.red_brown,
+            ),
+            reply=True,
+        )
+        raise DoNothing("...")
+
+    if not (data := await plugin.bot.greeting_db.get_greeting_data_for(greeting, g_id)):
+        raise NoChannelSetup(
+            context,
+            f"You need to setup a greeting channel for `{greeting}` category before updating other elements.",
+        )
 
 
 @greetings.child
@@ -134,40 +162,71 @@ async def set_channel(
     description="Greeting type to change.",
     choices=["welcome", "goodbye"],
 )
-@lightbulb.command(name="message", description="Customise greetings message.")
+@lightbulb.command(
+    name="message", description="Customise greetings message.", pass_options=True
+)
+@lightbulb.implements(lightbulb.PrefixSubCommand, lightbulb.SlashSubCommand)
 async def set_message(
     context: lightbulb.SlashContext | lightbulb.PrefixContext,
     greeting: str,
     message: str,
 ) -> None:
-    if not (g_id := context.guild_id):
-        return
-    if not greeting.lower() in ("welcome", "goodbye"):
-        await context.respond(
-            embed=hikari.Embed(
-                description="Invalid choice, `welcome` and `goodbye` are only usable choice.",
-                color=plugin.bot.colors.red_brown,
-            )
-        )
+    await check_setup(context, greeting)
+    message = message.replace("\\n", r"\n")
+    await GreetingMethods.set_message(context, greeting, message)
 
-        return
-    if not (data := plugin.bot.greeting_db.get_greeting_data_for(greeting, g_id)):
-        await context.respond(
-            embed=hikari.Embed(
-                description=f"You need to setup a greeting channel for `{greeting}` category before updating message.",
-                color=plugin.bot.colors.red_brown,
-            ),
-            reply=True,
-        )
-        return
-    message = message.replace("\\n", "\n")
-    await GreetingsHandler.set_message(context, greeting, message)
+
+@greetings.child
+@lightbulb.command(
+    name="image", description="Set the greeting image to appear in the message."
+)
+@lightbulb.implements(lightbulb.PrefixSubCommand)
+async def use_the_slash(
+    context: lightbulb.PrefixContext,
+) -> None:
     await context.respond(
         embed=hikari.Embed(
-            description=f"Set welcome message to: ```\n{message}```",
-            color=plugin.bot.colors.green,
+            description="Please use the slash version of this command for better functionality.",
+            color=plugin.bot.colors.yellow_green,
         ),
         reply=True,
+    )
+
+
+@greetings.child
+@lightbulb.option(
+    name="attachment",
+    description="The image to set for greeting messages. Preferred size: ()",
+    type=hikari.Attachment,
+)
+@lightbulb.option(
+    name="greeting",
+    description="Greeting type to update.",
+    choices=("welcome", "goodbye"),
+)
+@lightbulb.command(
+    name="image",
+    description="Set the greeting image to appear in the message.",
+    pass_options=True,
+    auto_defer=True,
+)
+@lightbulb.implements(lightbulb.SlashSubCommand)
+async def set_image(
+    context: lightbulb.PrefixContext | lightbulb.SlashContext,
+    greeting: str,
+    attachment: hikari.Attachment,
+) -> None:
+    if not (guild_id := context.guild_id):
+        return
+    await check_setup(context, greeting)
+    await context.respond(hikari.ResponseType.DEFERRED_MESSAGE_CREATE)
+    image = await GreetingImage.prepare_image_bytes(attachment, guild_id)
+    await GreetingMethods.set_bytes(context, greeting, image)
+    await context.respond(
+        embed=hikari.Embed(
+            description=f"Set `{greeting} image to`",
+            color=plugin.bot.colors.pink_flamingo,
+        ).set_image(hikari.Bytes(image, "image.png"))
     )
 
 
@@ -177,3 +236,6 @@ def load(bot: Bot) -> None:
 
 def unload(bot: Bot) -> None:
     bot.remove_plugin(plugin)
+
+
+hikari.OptionType.ATTACHMENT

@@ -1,4 +1,9 @@
+from __future__ import annotations
+
 import random
+import typing as t
+
+__all__: t.Tuple[str, ...] = ("Colors",)
 
 
 class Colors:
@@ -2974,9 +2979,11 @@ class Colors:
     def zinnwalditebrown(self) -> int:
         return 0x2C1608
 
-    @classmethod
-    def random(cls) -> int:
+    def random_with(self, like: str) -> None | list[int]:
+        return [getattr(self, a) for a in self.__dict__ if like in a] or None
+
+    def random(self) -> int:
         return getattr(
-            cls,
-            random.choice([attr for attr in cls.__dict__ if not attr.startswith("_")]),
+            self,
+            random.choice([attr for attr in self.__dict__ if not attr.startswith("_")]),
         )

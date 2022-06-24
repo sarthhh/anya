@@ -4,7 +4,6 @@ import typing as t
 
 import aiomysql  # type: ignore
 import hikari
-import lightbulb
 
 from .base_model import DatabaseModel
 
@@ -28,7 +27,7 @@ class PrefixDatabase(DatabaseModel):
     database_pool: aiomysql.Pool
     prefix_cache: dict[int | hikari.Snowflake | None, str] = {}
 
-    async def setup(self, bot: lightbulb.BotApp) -> aiomysql.Pool:
+    async def setup(self, bot: hikari.GatewayBot) -> aiomysql.Pool:
         """
         Setting up this database class for usage.
 

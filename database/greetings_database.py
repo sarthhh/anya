@@ -39,6 +39,8 @@ class GreetingsHandler(DatabaseModel):
         """
 
         self.database_pool: aiomysql.Pool = bot.database_pool  # type: ignore
+        self.bot = bot  # type: ignore
+
         await self.exec_write_query(
             """
             CREATE TABLE IF NOT EXISTS greetings
@@ -48,13 +50,13 @@ class GreetingsHandler(DatabaseModel):
                 welcome_cid BIGINT,
                 welcome_message TEXT,
                 welcome_color INT,
-                welcome_image_bytes BLOB,
+                welcome_image_bytes MEDIUMBLOB,
                 welcome_embed INT,
 
                 goodbye_cid BIGINT,
                 goodbye_message TEXT,
                 goodbye_color INT,
-                goodbye_image_bytes BLOB,
+                goodbye_image_bytes MEDIUMBLOB,
                 goodbye_embed INT
                 
             )
@@ -137,7 +139,7 @@ class GreetingsHandler(DatabaseModel):
         await self.exec_write_query(
             f"""
             UPDATE greetings SET
-            {greeting}_image = %s
+            {greeting}_image_bytes = %s
             WHERE guild_id = %s
             """,
             (image_data, guild_id),

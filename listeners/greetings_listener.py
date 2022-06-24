@@ -1,8 +1,21 @@
 from __future__ import annotations
 
+import typing as t
+
 import hikari
 import lightbulb
+
 from core.bot import Bot
+
+"""
+__all__ : t.Tuple[str, ...] = (
+    "Plugin",
+    "parse_member_message",
+    "member_added_to_server",
+    "load",
+    "unload",
+)
+"""
 
 
 class Plugin(lightbulb.Plugin):

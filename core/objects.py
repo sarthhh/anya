@@ -1,7 +1,10 @@
-import datetime
+from __future__ import annotations
+
 import typing as t
 
 import hikari
+
+__all__: t.Tuple[str, ...] = ("Greeting",)
 
 
 class Greeting:
@@ -47,36 +50,3 @@ class Greeting:
     @property
     def is_embed(self) -> bool:
         return True if self.data[5] == 1 else False
-
-
-class CardSpawn:
-    def __init__(self, data_tuple) -> None:
-        self.data = data_tuple
-
-    @property
-    def guild_id(self) -> int:
-        return self.data[0]
-
-    @property
-    def spawn_ts(self) -> datetime.datetime:
-        return datetime.datetime.fromtimestamp(self.data[1])
-
-    @property
-    def name(self) -> str:
-        return self.data[2]
-
-    @property
-    def tier(self) -> int:
-        return self.data[3]
-
-    @property
-    def url(self) -> str:
-        return self.data[4]
-
-    @property
-    def v(self) -> int:
-        return self.data[5]
-
-    @property
-    def claimer_id(self) -> int:
-        return self.data[6]

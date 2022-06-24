@@ -5,6 +5,7 @@ import sys
 import hikari
 import lightbulb
 import psutil  # type: ignore
+
 from core.bot import Bot
 
 
@@ -66,7 +67,9 @@ async def botstats(context: lightbulb.PrefixContext | lightbulb.SlashContext) ->
     **Python Version**: {f'{v.major}.{v.minor}.{v.micro}.{v.releaselevel}'}
     **Hikari Version**: {hikari.__version__}
     **Lightbulb Version**: {lightbulb.__version__}
-    """
+    """.replace(
+        "\t", ""
+    )
     embed = (
         hikari.Embed(
             color=plugin.bot.colors.peach_yellow, description=info.strip("    ")

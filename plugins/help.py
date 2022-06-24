@@ -3,7 +3,10 @@ import typing as t
 
 import hikari
 import lightbulb
+
 from core.bot import Bot
+
+__all__: t.Tuple[str, ...] = ("Help",)
 
 
 class Help(lightbulb.BaseHelpCommand):

@@ -1,3 +1,6 @@
 {
-    "discord.enabled": false
+    "discord.enabled": true,
+    "mypy.configFile": "mypy.ini",
+    "mypy.runUsingActiveInterpreter": true,
+    "mypy.debugLogging": true
 }
