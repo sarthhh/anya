@@ -45,7 +45,7 @@ class Greeting:
 
     @property
     def welcome_bytes(self) -> hikari.Bytes | None:
-        return hikari.Bytes(self.data[4], "greeting") if self.data[4] else None
+        return hikari.Bytes(self.data[4], "greeting.png") if self.data[4] else None
 
     @property
     def is_embed(self) -> bool:

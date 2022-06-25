@@ -1,5 +1,7 @@
 {
     "discord.enabled": true,
+    "workbench.colorTheme": "Nord",
+    "workbench.iconTheme": "material-icon-theme",
     "mypy.configFile": "mypy.ini",
     "mypy.runUsingActiveInterpreter": true,
     "mypy.debugLogging": true
