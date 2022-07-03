@@ -16,7 +16,7 @@ class NoChannelSetup(BaseException):
     This exception is raised when a user tries to setup logging elements
     without setting up logging channel.
 
-    Paramaters
+    Parameters
     ----------
 
         context: :class:`t.Union[lightbulb.PrefixContext, lightbulb.SlashContext]`
@@ -38,7 +38,7 @@ class InvalidChoice(BaseException):
     This exception is raised when user enters an invalid choice for
     a prefix command option.
 
-    Paramaters
+    Parameters
     ----------
 
         context: :class:`t.Union[lightbulb.PrefixContext, lightbulb.SlashContext]`
@@ -51,7 +51,7 @@ class InvalidChoice(BaseException):
     def __init__(
         self,
         context: lightbulb.PrefixContext | lightbulb.SlashContext,
-        option: lightbulb.OptionLike,
+        option: str,
         allowed: t.Tuple[str, ...],
         message: str,
     ) -> None:

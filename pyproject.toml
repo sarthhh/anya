@@ -7,7 +7,7 @@ license = "GNU GENERAL PUBLIC LICENSE"
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.11"
-hikari = "^2.0.0-alpha.108"
+hikari = "^2.0.0.dev109"
 hikari-lightbulb = "^2.2.2"
 aiomysql = "^0.1.1"
 uvloop = "^0.16.0"
@@ -19,7 +19,7 @@ Pillow = "^9.1.1"
 aiofiles = "^0.8.0"
 
 [tool.poetry.dev-dependencies]
-black = "^22.3.0"
+black = "^22.6.0"
 mypy = "^0.961"
 
 [build-system]

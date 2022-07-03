@@ -25,7 +25,7 @@ class GreetingsHandler(DatabaseModel):
         """
         Setting up this database class for usage.
 
-        Paramaters
+        Parameters
         ----------
 
             bot: :class:`hikari.GatewayBot`
@@ -86,7 +86,7 @@ class GreetingsHandler(DatabaseModel):
             ( guild_id, welcome_cid, welcome_message, welcome_embed )
             VALUES ( %s, %s, %s, %s )
             """,
-            (guild_id, channel_id, "Hey $user, welcome to $server.", 0),
+            (guild_id, channel_id, "Hey $user, welcome to $server.", 1),
         )
 
     async def set_goodbye_data_for_guild(self, guild_id: int, channel_id: int) -> None:
@@ -96,7 +96,7 @@ class GreetingsHandler(DatabaseModel):
             ( guild_id, goodbye_cid, goodbye_message, goodbye_embed )
             VALUES ( %s, %s, %s, %s )
             """,
-            (guild_id, channel_id, "$user left the server.", 0),
+            (guild_id, channel_id, "$user left the server.", 1),
         )
 
     async def update_channel_for(

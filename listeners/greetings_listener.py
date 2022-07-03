@@ -31,7 +31,7 @@ plugin = Plugin()
 def parse_member_message(base_message: str, member: hikari.Member) -> str:
     """A function parsing message for greeting events in a guild.
 
-    Paramaters
+    Parameters
     ----------
 
         base_message: :class:`str`
@@ -65,7 +65,7 @@ def parse_member_message(base_message: str, member: hikari.Member) -> str:
 async def member_added_to_server(event: hikari.MemberCreateEvent) -> None:
     """This event is triggered when a new member is added to the guild.
 
-    Paramaters
+    Parameters
     ----------
 
         event: :class:`hikari.MemberCreateEvent`

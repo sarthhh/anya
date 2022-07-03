@@ -31,7 +31,7 @@ class PrefixDatabase(DatabaseModel):
         """
         Setting up this database class for usage.
 
-        Paramaters
+        Parameters
         ----------
 
             bot: :class:`hikari.GatewayBot`
@@ -59,7 +59,7 @@ class PrefixDatabase(DatabaseModel):
         This method look-ups into the cache first, if the prefix is not found in cache
         the method fetchs it from the database, and adds it to the cache
 
-        Paramaters
+        Parameters
         ---------
 
             guild_id: :class:`int`
@@ -95,7 +95,7 @@ class PrefixDatabase(DatabaseModel):
 
         This adds the updated prefix both in the cache and the database.
 
-        Paramaters
+        Parameters
         ----------
 
             guild_id: :class:`int`

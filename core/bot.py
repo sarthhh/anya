@@ -52,6 +52,7 @@ class Bot(lightbulb.BotApp):
             ),
             help_slash_command=True,
             delete_unbound_commands=True,
+            banner="assets",
         )
         self.colors = Colors()  # initalising custom colors class
         self.prefix_db = (
@@ -103,7 +104,7 @@ class Bot(lightbulb.BotApp):
         Parameters
         ----------
 
-        _: :class:`.Bot`
+        _: :class:`lightbulb.BotApp`
             The bot class this coroutine is for.
         message: :class:`hikari.Message`
             The message which triggered the coroutine.

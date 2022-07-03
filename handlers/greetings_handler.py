@@ -19,7 +19,7 @@ class GreetingMethods:
     ) -> None:
         """Helper function for commands used for setting greeting channels.
 
-        Paramaters
+        Parameters
         ----------
 
             context: :class:`lightbulb.Context`
@@ -57,7 +57,7 @@ class GreetingMethods:
         """
         Updating the greeting message in the database.
 
-        Paramaters
+        Parameters
         ----------
 
             context: :class:`lightbulb.Context`
@@ -86,7 +86,7 @@ class GreetingMethods:
         """
         Updating the greeting color in the database.
 
-        Paramaters
+        Parameters
         ----------
 
             context: :class:`lightbulb.Context`
@@ -96,7 +96,6 @@ class GreetingMethods:
             new_color: :class:`int`
                 Hex/Int value of the color to set.
 
-
         """
         await context.bot.greeting_db.update_color_for(  # type: ignore
             greeting, context.guild_id, new_color
@@ -104,7 +103,7 @@ class GreetingMethods:
         await context.respond(
             embed=hikari.Embed(
                 description=f"Set {greeting} color to `{new_color}`", color=new_color  # type: ignore
-            )
+            ), reply=True
         )
 
     @staticmethod
@@ -114,7 +113,7 @@ class GreetingMethods:
         """
         Setting up welcome/goodbye image for the guild.
 
-        Paramaters
+        Parameters
         ----------
 
             context: :class:`lightbulb.Context`
@@ -137,7 +136,7 @@ class GreetingMethods:
         """
         Toggle between embed and text type log messages.
 
-        Paramaters
+        Parameters
         ----------
 
             context: :class:`lightbulb.Context`
@@ -156,5 +155,5 @@ class GreetingMethods:
             embed=hikari.Embed(
                 description=f"Messages will now appear as `{'embed' if toggle is True else 'text'}` messages",
                 color=context.bot.colors.green,  # type: ignore
-            )
+            ), reply=True
         )

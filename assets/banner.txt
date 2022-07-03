@@ -1,0 +1,9 @@
+${bold_red}   ,---.       .-._                            ,---.                 
+${bold_red} .--.'  \     /==/ \  .-._   ,--.-.  .-,--.  .--.'  \                      ${reset}${bold_white}光 version: ${hikari_version} ${thin_white}[${hikari_git_sha1}]${reset}           
+${bold_red} \==\-/\ \    |==|, \/ /, / /==/- / /=/_ /   \==\-/\ \                     ${reset}${bold_white}interpreter: ${thin_white}${python_implementation} ${python_version}${reset}           
+${bold_red} /==/-|_\ |   |==|-  \|  |  \==\, \/=/. /    /==/-|_\ |                    ${reset}${bold_white}bot version: ${thin_white}0.0.1.dev2${reset}           
+${bold_red} \==\,   - \  |==| ,  | -|   \==\  \/ -/     \==\,   - \                   ${reset}${bold_white}running on: ${thin_white}${system_description}${reset}           
+${bold_red} /==/ -   ,|  |==| -   _ |    |==|  ,_/      /==/ -   ,|                   ${reset}${bold_white}source code: ${thin_white}https://github.com/sarthhh/anya${reset}       
+${bold_red}/==/-  /\ - \ |==|  /\ , |    \==\-, /      /==/-  /\ - \                  ${reset}${bold_white}documentation: ${thin_white}https://sarthhh.github.io/anya${reset}
+${bold_red}\==\ _.\=\.-' /==/, | |- |    /==/._/       \==\ _.\=\.-'                  ${reset}${bold_white}support: ${thin_white}https://discord.com/users/580034015759826944${reset}
+${bold_red} `--`         `--`./  `--`    `--`-`         `--`         ${reset}

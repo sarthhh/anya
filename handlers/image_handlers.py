@@ -12,7 +12,7 @@ class GreetingImage:
     ) -> bytes:
         """Preparing resized bytes for the Attachment object.
 
-        Paramaters
+        Parameters
         ----------
 
             attachment: :class:`hikari.Attachment`

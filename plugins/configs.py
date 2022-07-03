@@ -4,8 +4,7 @@ import hikari
 import lightbulb
 
 from core.bot import Bot
-from core.exceptions import DoNothing, NoChannelSetup
-from database.greetings_database import GreetingsHandler
+from core.exceptions import DoNothing, InvalidChoice, NoChannelSetup
 from handlers.greetings_handler import GreetingMethods
 from handlers.image_handlers import GreetingImage
 
@@ -15,9 +14,22 @@ class Plugin(lightbulb.Plugin):
         super().__init__(name="Config", description="Bot configuration for you server.")
         self.pos = 1
         self.bot: Bot
+        self.base_colors: dict[str, int]
 
 
 plugin = Plugin()
+
+
+def do_setups() -> None:
+    plugin.base_colors: dict[str, int] = {  # type: ignore
+        "blue": plugin.bot.colors.blue,
+        "red": plugin.bot.colors.red,
+        "yellow": plugin.bot.colors.yellow,
+        "green": plugin.bot.colors.green,
+        "black": plugin.bot.colors.black,
+        "white": plugin.bot.colors.white,
+        "grey": plugin.bot.colors.cool_grey,
+    }
 
 
 @plugin.command
@@ -117,6 +129,15 @@ async def set_channel(
     greeting: str,
     channel: hikari.GuildTextChannel,
 ) -> None:
+    """
+    Setting up a channel for the particular greeting.
+
+    **Allowed Arguments:**
+    `greeting`: A choice between `welcome` and `goodbye`.
+    `channel`: The channel to send the greetings in
+
+    **Example Usage:** `anya greetings channel welcome #new_users
+    """
     if not greeting.lower() in ("welcome", "goodbye"):
         await context.respond(
             embed=hikari.Embed(
@@ -135,14 +156,12 @@ async def check_setup(
     if not (g_id := context.guild_id):
         return
     if not greeting.lower() in ("welcome", "goodbye"):
-        await context.respond(
-            embed=hikari.Embed(
-                description="Invalid choice, `welcome` and `goodbye` are only usable choice.",
-                color=plugin.bot.colors.red_brown,
-            ),
-            reply=True,
+        raise InvalidChoice(
+            context,
+            "greeting",
+            ("welcome", "goodbye"),
+            "Invalid choice, `welcome` and `goodbye` are only usable choice.",
         )
-        raise DoNothing("...")
 
     if not (data := await plugin.bot.greeting_db.get_greeting_data_for(greeting, g_id)):
         raise NoChannelSetup(
@@ -171,8 +190,17 @@ async def set_message(
     greeting: str,
     message: str,
 ) -> None:
+    """
+    Edit the message for the content or embed description for a particular greeting.
+
+    **Allowed Arguments:**
+    `greeting`: The greeting to edit message for (`welcome`/`goodbye`)
+    `message`: The new message.
+
+    **Example Usage:** `anya greetings message welcome Hey $user, welcome to $server. Have a great stay.`
+    """
     await check_setup(context, greeting)
-    message = message.replace("\\n", r"\n")
+    message = message.replace("\\n", "\n")
     await GreetingMethods.set_message(context, greeting, message)
 
 
@@ -184,6 +212,9 @@ async def set_message(
 async def use_the_slash(
     context: lightbulb.PrefixContext,
 ) -> None:
+    """
+    Slash command only.
+    """
     await context.respond(
         embed=hikari.Embed(
             description="Please use the slash version of this command for better functionality.",
@@ -226,16 +257,118 @@ async def set_image(
         embed=hikari.Embed(
             description=f"Set `{greeting} image to`",
             color=plugin.bot.colors.pink_flamingo,
-        ).set_image(hikari.Bytes(image, "image.png"))
+        ).set_image(hikari.Bytes(image, "image.png")),
+        reply=True,
     )
+
+
+@greetings.child
+@lightbulb.option(
+    name="selection", description="Choose the message type", choices=("embed", "text")
+)
+@lightbulb.option(
+    name="greeting",
+    description="Greeting type to update.",
+    choices=("welcome", "goodbye"),
+)
+@lightbulb.command(
+    name="type", description="The message type for welcome.", pass_options=True
+)
+@lightbulb.implements(lightbulb.PrefixSubCommand, lightbulb.SlashSubCommand)
+async def welcome_type(
+    context: lightbulb.PrefixContext | lightbulb.SlashContext,
+    greeting: str,
+    selection: str,
+) -> None:
+    """
+    Weather to send text or embed messages for greetings
+
+    **Allowed Arguments:**
+    `greeting`: The greeting to edit message for (`welcome`/`goodbye`)
+    `type`: text or embed.
+
+    **Example Usage:** `anya greetings type welcome text`
+    """
+    if not selection in (allowed := ("embed", "text")):
+        raise InvalidChoice(
+            context,
+            "selection",
+            allowed,
+            f"Invalid choice `{selection}` was passed for the `selection` argument.",
+        )
+
+    sel = True if selection == "embed" else False
+    await GreetingMethods.toggle_embed(context, greeting, sel)
+
+
+@greetings.child
+@lightbulb.option(name="color", description="The next for new color", autocomplete=True)
+@lightbulb.option(
+    name="greeting",
+    description="Greeting type to update.",
+    choices=("welcome", "goodbye"),
+)
+@lightbulb.command(
+    name="color",
+    description="The embed color for greeting message",
+    aliases=["colour"],
+    pass_options=True,
+)
+@lightbulb.implements(lightbulb.PrefixSubCommand, lightbulb.SlashSubCommand)
+async def embed_color(
+    context: lightbulb.PrefixContext | lightbulb.SlashContext, greeting: str, color: str
+) -> None:
+    """
+    Setup color for greeting embeds.
+
+    **Allowed Arguments:**
+    `greeting`: The greeting to edit message for (`welcome`/`goodbye`)
+    `color`: A color hex (or color name in slash commands.)
+
+    **Example Usage:** `anya greetings color welcome FFFFFF`
+    """
+    await check_setup(context, greeting)
+    try:
+        c = int(color, 16)
+        print(c)
+    except ValueError:
+        await context.respond(
+            embed=hikari.Embed(
+                description=f"`{color}` is not a valid color hex value.",
+                color=plugin.bot.colors.red,
+            ),
+            reply=True,
+        )
+        return
+    await GreetingMethods.set_color(context, greeting, c)
+
+
+@embed_color.autocomplete("color")
+async def callback(
+    option: hikari.AutocompleteInteractionOption, inter: hikari.AutocompleteInteraction
+) -> list[hikari.CommandChoice]:
+    if not (a := option.value):
+
+        return [
+            hikari.CommandChoice(name=x, value=str(y))
+            for x, y in plugin.base_colors.items()
+        ]
+    if isinstance(a, int):
+        return []
+    return [
+        hikari.CommandChoice(name=x, value=str(y))
+        for x, y in [
+            (name, getattr(plugin.bot.colors, name))
+            for name in dir(plugin.bot.colors)
+            if a in name and name[:2] != "__"
+        ]
+    ][:25]
 
 
 def load(bot: Bot) -> None:
     bot.add_plugin(plugin)
+    do_setups()
 
 
 def unload(bot: Bot) -> None:
     bot.remove_plugin(plugin)
-
-
-hikari.OptionType.ATTACHMENT

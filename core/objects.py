@@ -11,7 +11,7 @@ class Greeting:
     """
     Object construtor for data fetched from the MySQL database.
 
-    Paramaters
+    Parameters
     ----------
 
         bot: :class:`hikari.GatewayBot`

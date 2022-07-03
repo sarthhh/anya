@@ -15,7 +15,7 @@ class DatabaseModel:
     ) -> None:
         """Executing a MySQL write query.
 
-        Paramaters
+        Parameters
         ----------
 
             `query`: :class:`str`
@@ -34,7 +34,7 @@ class DatabaseModel:
     ) -> tuple[t.Any, ...]:
         """Executing a MySQL .fetchone() query.
 
-        Paramaters
+        Parameters
         ----------
 
             `query`: :class:`str`
@@ -53,7 +53,7 @@ class DatabaseModel:
     ) -> list[tuple[t.Any, ...]]:
         """Executing a MySQL .fetchmany() query.
 
-        Paramaters
+        Parameters
         ----------
             `num`: :class:`int`
                 Amount of queries to fetch
@@ -73,7 +73,7 @@ class DatabaseModel:
     ) -> list[tuple[t.Any, ...]]:
         """Executing a MySQL .fetchall() query.
 
-        Paramaters
+        Parameters
         ----------
 
             `query`: :class:`str`
