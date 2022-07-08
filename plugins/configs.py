@@ -330,7 +330,6 @@ async def embed_color(
     await check_setup(context, greeting)
     try:
         c = int(color, 16)
-        print(c)
     except ValueError:
         await context.respond(
             embed=hikari.Embed(

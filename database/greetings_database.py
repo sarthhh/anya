@@ -9,6 +9,9 @@ from core.objects import Greeting
 
 from .base_model import DatabaseModel
 
+if t.TYPE_CHECKING:
+    from core.bot import Bot
+
 __all__: t.Tuple[str, ...] = ("GreetingsHandler",)
 
 
@@ -21,7 +24,7 @@ class GreetingsHandler(DatabaseModel):
     database_pool: aiomysql.Pool
     bot: hikari.GatewayBot
 
-    async def setup(self, bot: hikari.GatewayBot) -> aiomysql.Pool:
+    async def setup(self, bot: "Bot") -> aiomysql.Pool:
         """
         Setting up this database class for usage.
 
@@ -38,8 +41,8 @@ class GreetingsHandler(DatabaseModel):
 
         """
 
-        self.database_pool: aiomysql.Pool = bot.database_pool  # type: ignore
-        self.bot = bot  # type: ignore
+        self.database_pool: aiomysql.Pool = bot.database_pool
+        self.bot = bot
 
         await self.exec_write_query(
             """

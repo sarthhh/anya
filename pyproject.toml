@@ -15,7 +15,7 @@ python-dotenv = "^0.20.0"
 lightbulb-ext-filament = {git = "https://github.com/tandemdude/lightbulb-ext-filament"}
 psutil = "^5.9.1"
 isort = "^5.10.1"
-Pillow = "^9.1.1"
+Pillow = "^9.2.0"
 aiofiles = "^0.8.0"
 
 [tool.poetry.dev-dependencies]

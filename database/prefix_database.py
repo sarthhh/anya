@@ -7,6 +7,9 @@ import hikari
 
 from .base_model import DatabaseModel
 
+if t.TYPE_CHECKING:
+    from core.bot import Bot
+
 __all__: t.Tuple[str, ...] = ("PrefixDatabase",)
 
 
@@ -27,7 +30,7 @@ class PrefixDatabase(DatabaseModel):
     database_pool: aiomysql.Pool
     prefix_cache: dict[int | hikari.Snowflake | None, str] = {}
 
-    async def setup(self, bot: hikari.GatewayBot) -> aiomysql.Pool:
+    async def setup(self, bot: "Bot") -> aiomysql.Pool:
         """
         Setting up this database class for usage.
 
@@ -43,7 +46,7 @@ class PrefixDatabase(DatabaseModel):
             :class:`aiomysql.Pool`
 
         """
-        self.database_pool = bot.database_pool  # type: ignore
+        self.database_pool = bot.database_pool
 
         await self.exec_write_query(
             """

@@ -103,7 +103,8 @@ class GreetingMethods:
         await context.respond(
             embed=hikari.Embed(
                 description=f"Set {greeting} color to `{new_color}`", color=new_color  # type: ignore
-            ), reply=True
+            ),
+            reply=True,
         )
 
     @staticmethod
@@ -155,5 +156,6 @@ class GreetingMethods:
             embed=hikari.Embed(
                 description=f"Messages will now appear as `{'embed' if toggle is True else 'text'}` messages",
                 color=context.bot.colors.green,  # type: ignore
-            ), reply=True
+            ),
+            reply=True,
         )
