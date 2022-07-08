@@ -19,6 +19,7 @@ plugin = Plugin()
 async def error_handler(event: lightbulb.CommandErrorEvent) -> None:
     exc = event.exception
     context = event.context
+    raise exc
 
 
 def load(bot: Bot) -> None:

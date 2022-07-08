@@ -10,6 +10,7 @@ import dotenv
 import hikari
 import lightbulb
 
+from database.as_cards_database import ShoobCardDatabase
 from database.greetings_database import GreetingsHandler
 from database.prefix_database import PrefixDatabase
 
@@ -60,6 +61,7 @@ class Bot(lightbulb.BotApp):
         )  # initialising PrefixDatabase, setup will be called later
 
         self.greeting_db = GreetingsHandler()
+        self.cards_db = ShoobCardDatabase()
         self.load_extensions_from("plugins")  # loading all bot extensions
         self.load_extensions_from("listeners")
         self.load_extensions("lightbulb.ext.filament.exts.superuser")
@@ -95,6 +97,7 @@ class Bot(lightbulb.BotApp):
         await self.greeting_db.setup(
             self
         )  # setting up the welcome& leave db for usage.
+        await self.cards_db.setup(self)
 
     async def get_prefix(self, _: lightbulb.BotApp, message: hikari.Message) -> str:
         """
