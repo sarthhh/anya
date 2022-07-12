@@ -5,7 +5,7 @@ import typing as t
 import hikari
 import lightbulb
 
-__all__: t.Tuple[str, ...] = ("GreetingsMethods",)
+__all__: t.Tuple[str, ...] = ("GreetingMethods",)
 
 
 class GreetingMethods:
